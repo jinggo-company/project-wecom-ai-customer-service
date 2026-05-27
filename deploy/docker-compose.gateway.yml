@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  # WeCom Gateway - Webhook callback service
+  gateway:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.gateway
+    container_name: wecom-gateway
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_HOST=0.0.0.0
+      - FLASK_PORT=5000
+      - WECOM_CORP_ID=${WECOM_CORP_ID}
+      - WECOM_AGENT_ID=${WECOM_AGENT_ID}
+      - WECOM_AGENT_SECRET=${WECOM_AGENT_SECRET}
+      - WECOM_TOKEN=${WECOM_TOKEN}
+      - WECOM_ENCODING_AES_KEY=${WECOM_ENCODING_AES_KEY}
+      - WECOM_CHATARCHIVE_SECRET=${WECOM_CHATARCHIVE_SECRET}
+      - REDIS_URL=redis://redis:6379/0
+      - AI_ENGINE_URL=http://backend:8000/api/agent/reply
+      - LOG_LEVEL=INFO
+    depends_on:
+      - redis
+    networks:
+      - wecom-net
+    restart: unless-stopped
+
+  # Redis for caching and queuing
+  redis:
+    image: redis:7-alpine
+    container_name: wecom-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - wecom-net
+    restart: unless-stopped
+
+volumes:
+  redis-data:
+
+networks:
+  wecom-net:
+    driver: bridge
