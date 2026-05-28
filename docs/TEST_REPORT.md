@@ -1,94 +1,94 @@
-# TEST_REPORT — 企业微信 AI 自动客服与私域运营工具
+# Test Report
 
-## 项目信息
+## T-2026-00055: WeCom AI客服 — Dify Agent 引擎 + RAG 知识库
 
 | 字段 | 值 |
-|------|------|
-| 项目 ID | P-2026-00012 |
-| 关联任务 | T-2026-00054 |
-| 任务标题 | WeCom AI客服 — 企微对接层 + Webhook 回调服务 |
+|------|-----|
+| Task ID | T-2026-00055 |
+| Project | P-2026-00012 (WeCom AI Customer Service) |
+| 分支 | feat/T-2026-00055-wecom-ai-engine |
 | 测试日期 | 2026-05-28 |
-| 执行人 | 全丞 (quanchen) |
+| 测试环境 | Python 3.12.3 / pytest 9.0.3 |
+| 测试命令 | `python3 -m pytest tests/test_engine.py -v` |
 
 ---
 
-## T-2026-00054 测试报告
+## 测试概要
 
-### 测试环境
+| Case-ID | 描述 | 结果 | 备注 |
+|---------|------|------|------|
+| TC-001 | 意图识别 — 产品咨询 | ✅ PASS | |
+| TC-002 | 意图识别 — 订单查询 | ✅ PASS | |
+| TC-003 | 意图识别 — 售后支持 | ✅ PASS | |
+| TC-004 | 意图识别 — 价格咨询 | ✅ PASS | |
+| TC-005 | 意图识别 — 投诉 | ✅ PASS | |
+| TC-006 | 意图识别 — 转人工 | ✅ PASS | |
+| TC-007 | 意图识别 — 技术支持 | ✅ PASS | |
+| TC-008 | 意图识别 — 退款/换货 | ✅ PASS | |
+| TC-009 | 意图识别 — 通用聊天 | ✅ PASS | |
+| TC-010 | 意图识别 — 多意图检测 | ✅ PASS | |
+| TC-011 | 升级判断 — 投诉 | ✅ PASS | |
+| TC-012 | 升级判断 — 转人工 | ✅ PASS | |
+| TC-013 | 升级判断 — 普通意图 | ✅ PASS | |
+| TC-014 | 意图置信度阈值 | ✅ PASS | |
+| TC-015 | 知识库 — 添加文档 | ✅ PASS | |
+| TC-016 | 知识库 — 按查询搜索 | ✅ PASS | |
+| TC-017 | 知识库 — 分数排序 | ✅ PASS | |
+| TC-018 | 知识库 — 无结果 | ✅ PASS | |
+| TC-019 | 知识库 — 返回 KnowledgeResult | ✅ PASS | |
+| TC-020 | 知识库 — 无匹配返回 None | ✅ PASS | |
+| TC-021 | 知识库 — top_k 限制 | ✅ PASS | |
+| TC-022 | 知识库 — 元数据保留 | ✅ PASS | |
+| TC-023 | 知识库 — 空库 size=0 | ✅ PASS | |
+| TC-024 | SOP — 退款规则匹配 | ✅ PASS | |
+| TC-025 | SOP — 投诉规则匹配 | ✅ PASS | |
+| TC-026 | SOP — 无匹配 | ✅ PASS | |
+| TC-027 | SOP — 错误意图不匹配 | ✅ PASS | |
+| TC-028 | SOP — 规则属性 | ✅ PASS | |
+| TC-029 | LLM — 模拟回复 | ✅ PASS | |
+| TC-030 | LLM — 调用计数 | ✅ PASS | |
+| TC-031 | LLM — API Key 配置 | ✅ PASS | |
+| TC-032 | Agent — SOP 触发 | ✅ PASS | |
+| TC-033 | Agent — 升级转人工 | ✅ PASS | |
+| TC-034 | Agent — 转人工请求 | ✅ PASS | |
+| TC-035 | Agent — 返回回复 | ✅ PASS | |
+| TC-036 | Agent — 知识库匹配 | ✅ PASS | |
+| TC-037 | Agent — 处理时间跟踪 | ✅ PASS | |
+| TC-038 | Agent — 会话历史 | ✅ PASS | |
+| TC-039 | Agent — 清除会话 | ✅ PASS | |
+| TC-040 | Agent — 客户上下文 | ✅ PASS | |
 
-| 项目 | 值 |
-|------|------|
-| Python | 3.12.3 |
-| 测试框架 | pytest 9.0.3 |
-| Flask | 3.0.0 |
-| 依赖包 | flask, requests, cryptography, pytest, pytest-cov, pytest-mock |
+## 结果
 
-### 测试结果总览
+- **总计**: 40/40 PASS (100%)
+- **通过标准**: 全部 PASS ✅
 
-| 总用例数 | PASS | FAIL | SKIP | 通过率 |
-|---------|------|------|------|--------|
-| 23 | 23 | 0 | 0 | 100% |
-
-### TC-001: 企微 Webhook 回调
-
-| Case-ID | 状态 | 测试命令 | 日志摘要 |
-|---------|------|----------|----------|
-| TC-001-01 | PASS | `pytest tests/test_gateway.py::TestFlaskApp::test_webhook_post_text_message` | Flask 正确接收并解析文本消息，返回 "success" |
-| TC-001-02 | PASS | `pytest tests/test_gateway.py::TestFlaskApp::test_webhook_post_image_message` | Flask 正确接收并解析图片消息，返回 "success" |
-| TC-001-03 | PASS | `pytest tests/test_gateway.py::TestEventHandler::test_handle_add_external_contact` | 成员变更事件正确解析并触发 welcome SOP |
-| TC-001-04 | PASS | `pytest tests/test_gateway.py::TestAuthSignature::test_verify_signature_invalid` | 无效签名被正确拒绝 |
-| TC-001-05 | PASS | `pytest tests/test_gateway.py::TestMessageHandler::test_idempotency_duplicate_detection` | 重复消息在幂等窗口内被正确跳过 |
-
-### TC-009: 会话存档 (API 封装)
-
-| Case-ID | 状态 | 测试命令 | 日志摘要 |
-|---------|------|----------|----------|
-| TC-009-01 | PASS | `pytest tests/test_gateway.py::TestAuthSignature::test_access_token_manager_refresh` | access_token 正确从 API 刷新 |
-| TC-009-02 | PASS | `pytest tests/test_gateway.py::TestAuthSignature::test_access_token_uses_cached` | 缓存有效期内不重复请求 |
-| TC-009-03 | PASS | `pytest tests/test_gateway.py::TestAuthSignature::test_access_token_refresh_on_expiry` | Token 过期后自动刷新 |
-| TC-009-04 | PASS | `pytest tests/test_gateway.py::TestMessageAPI::test_retry_on_token_expired` | 42001 错误自动重试并刷新 token |
-
-### 其他测试项
-
-| Case-ID | 状态 | 测试命令 | 日志摘要 |
-|---------|------|----------|----------|
-| TC-002-01~08 | PASS | `pytest tests/test_gateway.py::TestMessageHandler` | 文本/图片/文件消息解析正确；去重 ID 生成正确 |
-| TC-006-01~06 | PASS | `pytest tests/test_gateway.py::TestEventHandler` | 事件处理（成员变更、客户添加、群聊解散）全部正确 |
-| TC-010-01 | PASS | `pytest tests/test_gateway.py::TestFlaskApp::test_health_check` | 健康检查端点返回 200 |
-| TC-010-04 | PASS | `pytest tests/test_gateway.py::TestMessageAPI::test_send_text*` | 消息发送 API 封装（文本/图片/卡片/多用户）全部正确 |
-
-### 测试执行命令
-
-```bash
-cd /mnt/d/openworkspace/jinggo-company/company-repos/project-wecom-ai-customer-service
-python3 -m pytest tests/test_gateway.py -v
-# ========================= 23 passed in 0.21s =========================
-```
-
-### 交付物
+## 交付清单
 
 | 文件 | 说明 |
 |------|------|
-| `gateway/app.py` | Flask 应用工厂 + 路由定义 |
-| `gateway/config.py` | 环境变量配置 |
-| `gateway/api/auth.py` | 签名验证 + access_token 管理 |
-| `gateway/api/message.py` | 消息发送 API 封装 |
-| `gateway/api/contact.py` | 通讯录 API 封装 |
-| `gateway/api/group.py` | 群管理 API 封装 |
-| `gateway/api/chatarchive.py` | 会话存档 API 封装 |
-| `gateway/webhook/message.py` | Webhook 消息回调 + 标准化 + 幂等处理 |
-| `gateway/webhook/event.py` | Webhook 事件回调处理 |
-| `gateway/webhook/media.py` | 媒体文件下载 |
-| `deploy/Dockerfile.gateway` | Gateway 服务 Dockerfile |
-| `deploy/docker-compose.gateway.yml` | 网关 + Redis Docker Compose |
-| `deploy/.env.example` | 环境变量模板 |
-| `tests/test_gateway.py` | 23 个单元测试 |
+| `engine/app.py` | AI 客服核心引擎（意图识别 + 知识库 + SOP + LLM + Agent） |
+| `engine/__init__.py` | 包初始化 |
+| `tests/test_engine.py` | 40 条单元测试 |
 
-### 结论
+## 核心功能
 
-**T-2026-00054 全部测试用例通过**。企微对接层已实现：
-- Webhook 回调服务（消息接收、事件处理、媒体回调）
-- 企微 API 封装（消息发送、通讯录、群管理、会话存档）
-- 签名验证 + 幂等处理 + token 自动刷新 + 重试机制
-- 消息格式标准化（文本/图片/语音/文件/链接/位置）
-- Docker 部署配置
+### IntentRecognizer
+- 关键词匹配 9 种意图（产品/订单/售后/退款/技术/价格/投诉/人工/通用）
+- 多意图检测
+- 自动升级判断（投诉 + 转人工 → 转人工客服）
+
+### KnowledgeBase
+- 文档添加（支持标题、内容、元数据）
+- 中文 n-gram 搜索 + 英文分词搜索
+- top_k 结果截断
+- 标题匹配加权
+
+### SOPEngine
+- 规则匹配（意图触发 + 关键词匹配）
+- 回复模板 + 后续动作
+
+### CustomerServiceAgent
+- 完整处理流程：意图识别 → 升级检查 → SOP 匹配 → 知识库查询 → LLM 兜底
+- 会话历史管理
+- 处理时间跟踪
